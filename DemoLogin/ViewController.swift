@@ -1,18 +1,20 @@
-//
-//  ViewController.swift
-//  DemoLogin
-//
-//  Created by Eugene Tutuev on 15/04/2019.
-//  Copyright © 2019 Eugene Tutuev. All rights reserved.
-//
-
 import UIKit
+import FBSDKLoginKit
 
 class ViewController: UIViewController {
 
+	let lm = LoginManager()
+
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		// Do any additional setup after loading the view.
+
+//		[FBSDKSettings setAppID:self.appIDKey];
+//		Settings.appID = "1428588254023591"
+		///*"FacebookAppId" : "1532375100311572",
+		self.lm.logIn(readPermissions: ["email"], from: self) { (result, error) in
+			print(">>>>>\(String(describing: result)) \(String(describing: error))")
+		}
+
 	}
 
 

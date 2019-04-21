@@ -1,0 +1,20 @@
+PODS:
+  - FBSDKCoreKit (5.0.0-rc.1)
+  - FBSDKLoginKit (5.0.0-rc.1):
+    - FBSDKCoreKit (= 5.0.0-rc.1)
+
+DEPENDENCIES:
+  - FBSDKLoginKit (= 5.0.0-rc.1)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - FBSDKCoreKit
+    - FBSDKLoginKit
+
+SPEC CHECKSUMS:
+  FBSDKCoreKit: 27b94db6aa28814a16e6cbad810fdd218e322fbb
+  FBSDKLoginKit: 6f4d76b6cbf4746bbc6e255f221ab4689d458616
+
+PODFILE CHECKSUM: 9b57eb96a7786d1684f0468135ab7008d045ed8c
+
+COCOAPODS: 1.6.0.beta.1
