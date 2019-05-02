@@ -3,7 +3,7 @@ import UIKit
 class Applications {
 
 	static var isFacebookAppInstalled: Bool {
-		return canOpenScheme(FBLoginManager.scheme)
+		return canOpenScheme(FBLoginManager.fbApplicationScheme)
 
 	}
 
