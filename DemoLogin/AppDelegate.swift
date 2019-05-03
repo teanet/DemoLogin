@@ -7,7 +7,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+
+		print(">>>>>\((FBSDKLoginError.reserved as NSError).domain)")
+		print(">>>>>\(FBURL.facebookURL(with: "m.", path: "asd/asd", query: ["ds": "asd"]))")
 		return true
+
 	}
 
 	

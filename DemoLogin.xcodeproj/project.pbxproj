@@ -13,6 +13,7 @@
 		73256A582264511A0074A605 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 73256A572264511A0074A605 /* Assets.xcassets */; };
 		73256A5B2264511A0074A605 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 73256A592264511A0074A605 /* LaunchScreen.storyboard */; };
 		73256F2A226453C70074A605 /* FBLoginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73256F29226453C70074A605 /* FBLoginManager.swift */; };
+		73C429FF227BF4E600C7BCEA /* FBURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73C429FE227BF4E600C7BCEA /* FBURL.swift */; };
 		73DC9BB8226C33AD002E262A /* InfoHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DC9BB7226C33AD002E262A /* InfoHelpers.swift */; };
 		73DC9BBA226C3771002E262A /* Applications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DC9BB9226C3771002E262A /* Applications.swift */; };
 		FC2812DA4766AA6F51991A83 /* Pods_DemoLogin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5053679077076CE742DEC342 /* Pods_DemoLogin.framework */; };
@@ -29,6 +30,7 @@
 		73256A5C2264511A0074A605 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		73256F25226452550074A605 /* DemoLogin-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DemoLogin-Bridging-Header.h"; sourceTree = "<group>"; };
 		73256F29226453C70074A605 /* FBLoginManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FBLoginManager.swift; sourceTree = "<group>"; };
+		73C429FE227BF4E600C7BCEA /* FBURL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FBURL.swift; sourceTree = "<group>"; };
 		73DC9BB7226C33AD002E262A /* InfoHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoHelpers.swift; sourceTree = "<group>"; };
 		73DC9BB9226C3771002E262A /* Applications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Applications.swift; sourceTree = "<group>"; };
 		A90B2491F9DC867AE3742B0F /* Pods-DemoLogin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DemoLogin.release.xcconfig"; path = "Target Support Files/Pods-DemoLogin/Pods-DemoLogin.release.xcconfig"; sourceTree = "<group>"; };
@@ -95,6 +97,7 @@
 				73256F29226453C70074A605 /* FBLoginManager.swift */,
 				73DC9BB7226C33AD002E262A /* InfoHelpers.swift */,
 				73DC9BB9226C3771002E262A /* Applications.swift */,
+				73C429FE227BF4E600C7BCEA /* FBURL.swift */,
 			);
 			path = FB;
 			sourceTree = "<group>";
@@ -233,6 +236,7 @@
 				73DC9BBA226C3771002E262A /* Applications.swift in Sources */,
 				73256A53226451190074A605 /* ViewController.swift in Sources */,
 				73256A51226451190074A605 /* AppDelegate.swift in Sources */,
+				73C429FF227BF4E600C7BCEA /* FBURL.swift in Sources */,
 				73256F2A226453C70074A605 /* FBLoginManager.swift in Sources */,
 				73DC9BB8226C33AD002E262A /* InfoHelpers.swift in Sources */,
 			);

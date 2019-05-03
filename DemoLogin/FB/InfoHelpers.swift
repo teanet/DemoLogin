@@ -11,3 +11,15 @@ class InfoHelpers {
 	}
 
 }
+
+extension InfoHelpers {
+
+	static var fbAppID: String = {
+		return UserDefaults.standard.string(forKey: "FacebookAppID") ?? ""
+	}()
+
+	static func validateFBAppID() {
+		assert(!self.fbAppID.isEmpty, "You should set app id")
+	}
+
+}

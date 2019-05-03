@@ -10,30 +10,9 @@ public protocol IOpenUrlHandler {
 	func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any]) -> Bool
 }
 
-struct ErrorDomains {
-	static let SFVCCanceledLogin = "com.apple.SafariServices.Authentication"
-	static let ASCanceledLogin = "com.apple.AuthenticationServices.WebAuthenticationSession"
-
-	static let FBSDKLoginErrorDomain = "com.facebook.sdk.login"
-
-	static var external = [ SFVCCanceledLogin, ASCanceledLogin ]
-}
-
-enum FBSDKLoginError: Int, Error {
-	case reserved = 300
-	/// The error code for unknown errors.
-	case unknown
-
-	var domain: String {
-		return ErrorDomains.FBSDKLoginErrorDomain
-	}
-
-}
-
 class FBLoginManager {
 
 	static let version = "5.0.0-rc.1"
-	static let fbApplicationScheme = "fbauth2"
 	var defaultAudience: Audience = .friends
 	private var isUsedSFAuthSession = false
 	enum State {
@@ -54,24 +33,23 @@ class FBLoginManager {
 	func login(permissions: Set<ReadPermissions>, sourceVC: UIViewController, completion: LoginBlock) {
 		FBLoginManager.validateURLSchemes()
 		self.isUsedSFAuthSession = false
-		var loginParams: [String: Any] = [
-			"client_id": FBLoginManager.appID,
+		var loginParams: [String: String] = [
+			"client_id": InfoHelpers.fbAppID,
 			"response_type": "token,signed_request",
 			"redirect_uri": "fbconnect://success",
 			"display": "touch",
 			"sdk": "ios",
 			"return_scopes": "true",
 			"sdk_version": FBLoginManager.version,
-			"fbapp_pres": Applications.isFacebookAppInstalled,
+			"fbapp_pres": Applications.isFacebookAppInstalled.description,
 			"auth_type": "rerequest",
-			"default_audience": self.defaultAudience,
+			"default_audience": self.defaultAudience.rawValue,
 			"scope": permissions.map({ $0.rawValue }).joined(separator: ",")
 		]
 
 		let challenge = self.stringForChallenge().addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
 		let state = [ "challenge": challenge ]
 		loginParams["state"] = JSONSerialization.jsonEncodedString(with: state)
-
 
 //		void(^completion)(BOOL, NSString *, NSError *) = ^void(BOOL didPerformLogIn, NSString *authMethod, NSError *error) {
 //			if (didPerformLogIn) {
@@ -113,8 +91,14 @@ class FBLoginManager {
 //		[self storeExpectedChallenge:expectedChallenge];
 	}
 
-	private func performBrowserLogInWithParameters(_ params: [String: Any], completion: @escaping (Bool, String, Error?) -> Void) {
+	private func performBrowserLogInWithParameters(_ params: [String: String], completion: @escaping (Bool, String, Error?) -> Void) {
+		var loginParams = params
+		if let redirectURL = FBURL.redirectUri {
+			loginParams["redirect_uri"] = redirectURL
+		}
 
+		let url = FBURL.facebookURL(with: "m.", path: FBURL.oAuthPath, query: loginParams)
+		
 	}
 
 	func invokeHandler(result: Result<LoginResult, Error>) {
@@ -151,22 +135,8 @@ class FBLoginManager {
 	}
 
 	class func validateURLSchemes() {
-		self.validateAppID()
-		assert(InfoHelpers.isRegisteredURLScheme(self.myRedirectScheme), "You should register \(self.myRedirectScheme) in your Info.plist")
-	}
-
-	private static var myRedirectScheme: String {
-		return "fb\(self.appID)"
-	}
-
-	private static var appID: String = {
-		return UserDefaults.standard.string(forKey: "FacebookAppID") ?? ""
-	}()
-	class func set(appId: String) {
-		self.appID = appId
-	}
-	class func validateAppID() {
-		assert(!self.appID.isEmpty, "You should set app id")
+		InfoHelpers.validateFBAppID()
+		assert(InfoHelpers.isRegisteredURLScheme(FBURL.myRedirectScheme), "You should register \(FBURL.myRedirectScheme) in your Info.plist")
 	}
 
 }
@@ -195,7 +165,7 @@ struct Token {
 extension FBLoginManager: IOpenUrlHandler {
 
 	func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any]) -> Bool {
-		let isFacebookURL = self.canOpenUrl(url, sourceApplication: options[.sourceApplication] as? String)
+		let isFacebookURL = FBURL.canOpenUrl(url, sourceApplication: options[.sourceApplication] as? String)
 
 		if !isFacebookURL && self.isPerformingLogin  {
 			self.handleImplicitCancelOfLogIn()
@@ -219,17 +189,7 @@ extension FBLoginManager: IOpenUrlHandler {
 		return isFacebookURL
 	}
 
-	func canOpenUrl(_ url: URL, sourceApplication: String?) -> Bool {
-		// verify the URL is intended as a callback for the SDK's log in
-		let isFacebookURL = url.scheme?.hasPrefix(FBLoginManager.myRedirectScheme) == true &&
-			url.host == "authorize"
 
-		let isExpectedSourceApplication =
-			sourceApplication?.hasPrefix("com.facebook") == true  ||
-			sourceApplication?.hasPrefix("com.apple") == true ||
-			sourceApplication?.hasPrefix("com.burbn") == true
-		return isFacebookURL && isExpectedSourceApplication;
-	}
 
 
 
