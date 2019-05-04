@@ -93,6 +93,14 @@ struct FBURL {
 
 }
 
+extension URL {
+
+	var isFBAuthenticationURL: Bool {
+		return self.path.hasSuffix(FBURL.oAuthPath)
+	}
+
+}
+
 struct ErrorDomains {
 	static let SFVCCanceledLogin = "com.apple.SafariServices.Authentication"
 	static let ASCanceledLogin = "com.apple.AuthenticationServices.WebAuthenticationSession"

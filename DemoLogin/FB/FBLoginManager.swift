@@ -6,7 +6,7 @@ public enum ReadPermissions: String {
 
 typealias LoginBlock = (Result<LoginResult, Error>) -> Void
 
-public protocol IOpenUrlHandler {
+public protocol IOpenUrlHandler: AnyObject {
 	func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any]) -> Bool
 }
 
@@ -29,10 +29,14 @@ class FBLoginManager {
 
 	private var state: State = .idle
 	var isPerformingLogin: Bool { return self.state == .performingLogin }
+	private var useSafariViewController = false
+	private lazy var bridgeAPI = BridgeAPI()
+	private weak var fromViewController: UIViewController?
 
 	func login(permissions: Set<ReadPermissions>, sourceVC: UIViewController, completion: LoginBlock) {
 		FBLoginManager.validateURLSchemes()
 		self.isUsedSFAuthSession = false
+		self.fromViewController = sourceVC
 		var loginParams: [String: String] = [
 			"client_id": InfoHelpers.fbAppID,
 			"response_type": "token,signed_request",
@@ -97,8 +101,13 @@ class FBLoginManager {
 			loginParams["redirect_uri"] = redirectURL
 		}
 
+		self.isUsedSFAuthSession = true
 		let url = FBURL.facebookURL(with: "m.", path: FBURL.oAuthPath, query: loginParams)
-		
+		self.bridgeAPI.open(url: url, sender: self, fromVC: self.fromViewController) { (result) in
+			
+		}
+
+
 	}
 
 	func invokeHandler(result: Result<LoginResult, Error>) {
