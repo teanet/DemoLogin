@@ -8,6 +8,7 @@ typealias LoginBlock = (Result<LoginResult, Error>) -> Void
 
 public protocol IOpenUrlHandler: AnyObject {
 	func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any]) -> Bool
+	func canOpenURL(_ url: URL, application: UIApplication, options: [UIApplication.OpenURLOptionsKey : Any]) -> Bool
 }
 
 class FBLoginManager {
@@ -45,7 +46,7 @@ class FBLoginManager {
 			"sdk": "ios",
 			"return_scopes": "true",
 			"sdk_version": FBLoginManager.version,
-			"fbapp_pres": Applications.isFacebookAppInstalled.description,
+			"fbapp_pres": Applications.isFacebookAppInstalled ? "1" : "0",
 			"auth_type": "rerequest",
 			"default_audience": self.defaultAudience.rawValue,
 			"scope": permissions.map({ $0.rawValue }).joined(separator: ",")
@@ -173,8 +174,12 @@ struct Token {
 
 extension FBLoginManager: IOpenUrlHandler {
 
+	func canOpenURL(_ url: URL, application: UIApplication, options: [UIApplication.OpenURLOptionsKey : Any]) -> Bool {
+		return FBURL.canOpenUrl(url, sourceApplication: options[.sourceApplication] as? String)
+	}
+
 	func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any]) -> Bool {
-		let isFacebookURL = FBURL.canOpenUrl(url, sourceApplication: options[.sourceApplication] as? String)
+		let isFacebookURL = self.canOpenURL(url, application: app, options: options)
 
 		if !isFacebookURL && self.isPerformingLogin  {
 			self.handleImplicitCancelOfLogIn()

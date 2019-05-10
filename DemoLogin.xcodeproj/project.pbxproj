@@ -13,6 +13,9 @@
 		73256A582264511A0074A605 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 73256A572264511A0074A605 /* Assets.xcassets */; };
 		73256A5B2264511A0074A605 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 73256A592264511A0074A605 /* LaunchScreen.storyboard */; };
 		73256F2A226453C70074A605 /* FBLoginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73256F29226453C70074A605 /* FBLoginManager.swift */; };
+		733FFE89228531210082E326 /* UIApplication+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733FFE88228531210082E326 /* UIApplication+Helpers.swift */; };
+		733FFE8B2285352F0082E326 /* ContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733FFE8A2285352F0082E326 /* ContainerViewController.swift */; };
+		733FFE8D228538260082E326 /* BridgeAPIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733FFE8C228538260082E326 /* BridgeAPIRequest.swift */; };
 		73635CE7227D65B400199506 /* BridgeAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73635CE6227D65B400199506 /* BridgeAPI.swift */; };
 		73C429FF227BF4E600C7BCEA /* FBURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73C429FE227BF4E600C7BCEA /* FBURL.swift */; };
 		73DC9BB8226C33AD002E262A /* InfoHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DC9BB7226C33AD002E262A /* InfoHelpers.swift */; };
@@ -31,6 +34,9 @@
 		73256A5C2264511A0074A605 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		73256F25226452550074A605 /* DemoLogin-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DemoLogin-Bridging-Header.h"; sourceTree = "<group>"; };
 		73256F29226453C70074A605 /* FBLoginManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FBLoginManager.swift; sourceTree = "<group>"; };
+		733FFE88228531210082E326 /* UIApplication+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+Helpers.swift"; sourceTree = "<group>"; };
+		733FFE8A2285352F0082E326 /* ContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerViewController.swift; sourceTree = "<group>"; };
+		733FFE8C228538260082E326 /* BridgeAPIRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BridgeAPIRequest.swift; sourceTree = "<group>"; };
 		73635CE6227D65B400199506 /* BridgeAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BridgeAPI.swift; sourceTree = "<group>"; };
 		73C429FE227BF4E600C7BCEA /* FBURL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FBURL.swift; sourceTree = "<group>"; };
 		73DC9BB7226C33AD002E262A /* InfoHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoHelpers.swift; sourceTree = "<group>"; };
@@ -101,6 +107,9 @@
 				73DC9BB9226C3771002E262A /* Applications.swift */,
 				73C429FE227BF4E600C7BCEA /* FBURL.swift */,
 				73635CE6227D65B400199506 /* BridgeAPI.swift */,
+				733FFE8C228538260082E326 /* BridgeAPIRequest.swift */,
+				733FFE88228531210082E326 /* UIApplication+Helpers.swift */,
+				733FFE8A2285352F0082E326 /* ContainerViewController.swift */,
 			);
 			path = FB;
 			sourceTree = "<group>";
@@ -237,11 +246,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				73635CE7227D65B400199506 /* BridgeAPI.swift in Sources */,
+				733FFE8D228538260082E326 /* BridgeAPIRequest.swift in Sources */,
 				73DC9BBA226C3771002E262A /* Applications.swift in Sources */,
 				73256A53226451190074A605 /* ViewController.swift in Sources */,
 				73256A51226451190074A605 /* AppDelegate.swift in Sources */,
 				73C429FF227BF4E600C7BCEA /* FBURL.swift in Sources */,
 				73256F2A226453C70074A605 /* FBLoginManager.swift in Sources */,
+				733FFE89228531210082E326 /* UIApplication+Helpers.swift in Sources */,
+				733FFE8B2285352F0082E326 /* ContainerViewController.swift in Sources */,
 				73DC9BB8226C33AD002E262A /* InfoHelpers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -392,6 +404,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = DemoLogin/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -413,6 +426,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = DemoLogin/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
