@@ -98,10 +98,7 @@ class FBLoginManager {
 
 	private func performBrowserLogInWithParameters(_ params: [String: String], completion: @escaping (Bool, String, Error?) -> Void) {
 		var loginParams = params
-		if let redirectURL = FBURL.redirectUri {
-			loginParams["redirect_uri"] = redirectURL
-		}
-
+		loginParams["redirect_uri"] = FBURL.redirectUri
 		self.isUsedSFAuthSession = true
 		let url = FBURL.facebookURL(with: "m.", path: FBURL.oAuthPath, query: loginParams)
 		self.bridgeAPI.open(url: url, sender: self, fromVC: self.fromViewController) { (result) in
@@ -186,6 +183,7 @@ extension FBLoginManager: IOpenUrlHandler {
 		}
 
 		if isFacebookURL {
+			let params = url.fbLoginQuery()
 //			if (isFacebookURL) {
 //				NSDictionary *urlParameters = [FBSDKLoginUtility queryParamsFromLoginURL:url];
 //				id<FBSDKLoginCompleting> completer = [[FBSDKLoginURLCompleter alloc] initWithURLParameters:urlParameters appID:[FBSDKSettings appID]];

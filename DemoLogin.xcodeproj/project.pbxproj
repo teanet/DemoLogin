@@ -16,6 +16,7 @@
 		733FFE89228531210082E326 /* UIApplication+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733FFE88228531210082E326 /* UIApplication+Helpers.swift */; };
 		733FFE8B2285352F0082E326 /* ContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733FFE8A2285352F0082E326 /* ContainerViewController.swift */; };
 		733FFE8D228538260082E326 /* BridgeAPIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733FFE8C228538260082E326 /* BridgeAPIRequest.swift */; };
+		733FFEB12287F26B0082E326 /* FBLoginCompletionParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733FFEB02287F26B0082E326 /* FBLoginCompletionParameters.swift */; };
 		73635CE7227D65B400199506 /* BridgeAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73635CE6227D65B400199506 /* BridgeAPI.swift */; };
 		73C429FF227BF4E600C7BCEA /* FBURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73C429FE227BF4E600C7BCEA /* FBURL.swift */; };
 		73DC9BB8226C33AD002E262A /* InfoHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73DC9BB7226C33AD002E262A /* InfoHelpers.swift */; };
@@ -37,6 +38,7 @@
 		733FFE88228531210082E326 /* UIApplication+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+Helpers.swift"; sourceTree = "<group>"; };
 		733FFE8A2285352F0082E326 /* ContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerViewController.swift; sourceTree = "<group>"; };
 		733FFE8C228538260082E326 /* BridgeAPIRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BridgeAPIRequest.swift; sourceTree = "<group>"; };
+		733FFEB02287F26B0082E326 /* FBLoginCompletionParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FBLoginCompletionParameters.swift; sourceTree = "<group>"; };
 		73635CE6227D65B400199506 /* BridgeAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BridgeAPI.swift; sourceTree = "<group>"; };
 		73C429FE227BF4E600C7BCEA /* FBURL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FBURL.swift; sourceTree = "<group>"; };
 		73DC9BB7226C33AD002E262A /* InfoHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoHelpers.swift; sourceTree = "<group>"; };
@@ -110,6 +112,7 @@
 				733FFE8C228538260082E326 /* BridgeAPIRequest.swift */,
 				733FFE88228531210082E326 /* UIApplication+Helpers.swift */,
 				733FFE8A2285352F0082E326 /* ContainerViewController.swift */,
+				733FFEB02287F26B0082E326 /* FBLoginCompletionParameters.swift */,
 			);
 			path = FB;
 			sourceTree = "<group>";
@@ -247,6 +250,7 @@
 			files = (
 				73635CE7227D65B400199506 /* BridgeAPI.swift in Sources */,
 				733FFE8D228538260082E326 /* BridgeAPIRequest.swift in Sources */,
+				733FFEB12287F26B0082E326 /* FBLoginCompletionParameters.swift in Sources */,
 				73DC9BBA226C3771002E262A /* Applications.swift in Sources */,
 				73256A53226451190074A605 /* ViewController.swift in Sources */,
 				73256A51226451190074A605 /* AppDelegate.swift in Sources */,

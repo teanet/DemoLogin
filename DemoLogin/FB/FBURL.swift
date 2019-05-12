@@ -9,11 +9,11 @@ struct FBURL {
 
 	static let oAuthPath = "/dialog/oauth";
 
-	static var redirectUri: String? {
+	static var redirectUri: String {
 		var cmp = URLComponents()
 		cmp.host = "authorize"
 		cmp.scheme = self.myRedirectScheme
-		return cmp.url?.absoluteString
+		return cmp.url!.absoluteString
 	}
 
 	static func canOpenUrl(_ url: URL, sourceApplication: String?) -> Bool {
@@ -99,6 +99,44 @@ extension URL {
 		return self.path.hasSuffix(FBURL.oAuthPath)
 	}
 
+	func fbLoginQuery() -> [String: String] {
+		guard self.absoluteString.hasPrefix(FBURL.redirectUri) else { return [:] }
+
+		var params = [String: String]()
+		if let queryParams = self.query?.dictionaryFromQuery() {
+			params.merge(queryParams) { first, _ in first }
+		}
+		if let fragmentParams = self.fragment?.dictionaryFromQuery() {
+			params.merge(fragmentParams) { first, _ in first }
+		}
+		return params
+	}
+
+}
+
+extension String {
+
+	func dictionaryFromQuery() -> [String: String] {
+		var dict = [String: String]()
+
+		let components = self.components(separatedBy: "&")
+		for component in components {
+
+			let keyValue = component.components(separatedBy: "=")
+			if keyValue.count == 2,
+				let key = keyValue[0].urlDecode(),
+				let value = keyValue[1].urlDecode() {
+				dict[key] = value
+			}
+		}
+		return dict
+	}
+
+	func urlDecode() -> String? {
+		let string = self.replacingOccurrences(of: "+", with: " ")
+		return string.removingPercentEncoding
+	}
+
 }
 
 struct ErrorDomains {
@@ -116,7 +154,22 @@ enum FBSDKLoginError: Int, Error, CustomNSError {
 	/// The error code for unknown errors.
 	case unknown
 
+	/**
+	The Graph API returned an error.
+
+	See below for useful userInfo keys (beginning with FBSDKGraphRequestError*)
+	*/
+	case graphRequestGraphAPI
+	
 	static var errorDomain: String { return ErrorDomains.FBSDKLoginErrorDomain }
 
 }
 
+enum FBGraphRequestError: Int {
+	/** The default error category that is not known to be recoverable. Check `FBSDKLocalizedErrorDescriptionKey` for a user facing message. */
+	case other = 0
+	/** Indicates the error is temporary (such as server throttling). While a recoveryAttempter will be provided with the error instance, the attempt is guaranteed to succeed so you can simply retry the operation if you do not want to present an alert.  */
+	case transient = 1
+	/** Indicates the error can be recovered (such as requiring a login). A recoveryAttempter will be provided with the error instance that can take UI action. */
+	case recoverable = 2
+}
