@@ -17,11 +17,13 @@ extension String {
 
 }
 
+
 class FBLoginCompletion {
+	typealias LoginCompletionResult = Result<FBLoginCompletionParameters, Error>
+	let result: LoginCompletionResult
 
-	let result: Result<FBLoginCompletionParameters, Error>
-
-	init(params: [String: String], appID: String) {
+	init(url: URL) {
+		let params = url.fbLoginQuery()
 
 		if let accessToken = params["access_token"], accessToken.count > 0 {
 			let grantedPermissionsString = params["granted_scopes"] ?? ""
@@ -53,6 +55,7 @@ class FBLoginCompletion {
 				dataAccessExpirationDate = Date.init(timeIntervalSince1970: interval)
 			}
 
+			let appID = InfoHelpers.fbAppID
 			let params = FBLoginCompletionParameters(
 				accessTokenString: accessToken,
 				permissions: permissions,
@@ -63,13 +66,27 @@ class FBLoginCompletion {
 				dataAccessExpirationDate: dataAccessExpirationDate,
 				challenge: nil
 			)
-			//			NSError *error = nil;
-			//			NSDictionary *state = [FBSDKInternalUtility objectForJSONString:parameters[@"state"] error:&error];
-			//			_parameters.challenge = [FBSDKUtility URLDecode:state[@"challenge"]];
-
+			// TODO: Handle challenge
+			// NSError *error = nil;
+			// NSDictionary *state = [FBSDKInternalUtility objectForJSONString:parameters[@"state"] error:&error];
+			// _parameters.challenge = [FBSDKUtility URLDecode:state[@"challenge"]];
 			self.result = .success(params)
 		} else {
 			self.result = .failure(FBSDKLoginError.fbErrorFromReturnURLParameters(params))
+		}
+	}
+
+	func complete(_ loginManager: FBLoginManager, completion: @escaping (LoginCompletionResult) -> Void) {
+
+		switch self.result {
+			case .success(let params):
+				if params.userID.count == 0 {
+					completion(self.result)
+				} else {
+					completion(self.result)
+				}
+			case .failure(_):
+				completion(self.result)
 		}
 
 	}
