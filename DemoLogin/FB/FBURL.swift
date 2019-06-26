@@ -151,6 +151,12 @@ struct ErrorDomains {
 
 enum FBSDKLoginError: Int, Error, CustomNSError {
 	case reserved = 300
+
+	/**
+	The login response was missing a valid challenge string.
+	*/
+	case badChallenge
+
 	/// The error code for unknown errors.
 	case unknown
 

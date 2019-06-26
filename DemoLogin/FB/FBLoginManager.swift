@@ -11,7 +11,7 @@ public protocol IOpenUrlHandler: AnyObject {
 	func canOpenURL(_ url: URL, application: UIApplication, options: [UIApplication.OpenURLOptionsKey : Any]) -> Bool
 }
 
-class FBLoginManager {
+final class FBLoginManager {
 
 	static let version = "5.0.0-rc.1"
 	var defaultAudience: Audience = .friends
@@ -35,7 +35,15 @@ class FBLoginManager {
 	private weak var fromViewController: UIViewController?
 	private var requestedPermissions = Set<String>()
 	private var completion: LoginBlock?
-	func login(permissions: Set<ReadPermissions>, sourceVC: UIViewController, completion: LoginBlock) {
+	private let tokenCache: AccessTokenCache
+	private(set) var currentAccessToken: Token?
+
+	init() {
+		self.tokenCache = AccessTokenCache()
+		self.currentAccessToken = self.tokenCache.fbAccessToken
+	}
+
+	func login(permissions: Set<ReadPermissions>, sourceVC: UIViewController, completion: @escaping LoginBlock) {
 		FBLoginManager.validateURLSchemes()
 		self.completion = completion
 		self.isUsedSFAuthSession = false
@@ -55,37 +63,39 @@ class FBLoginManager {
 		]
 
 		let challenge = self.stringForChallenge().addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
-		self.storeExpectedChallenge(challenge)
+		self.challenge = challenge
 		let state = [ "challenge": challenge ]
 		loginParams["state"] = JSONSerialization.jsonEncodedString(with: state)
-		self.performBrowserLogInWithParameters(loginParams) { [weak self] (didPerformLogIn, authMethod, error) in
-			if didPerformLogIn {
-				self?.state = .performingLogin
-			} else if let error = error, ErrorDomains.external.contains((error as NSError).domain) {
-				self?.handleImplicitCancelOfLogIn()
-			} else {
-				let error = error ?? FBSDKLoginError.unknown
-				self?.invokeHandler(result: .failure(error))
+		self.performBrowserLogInWithParameters(loginParams) { [weak self] result in
+			switch result {
+				case .success(_):
+					self?.state = .performingLogin
+				case .failure(let error):
+					if ErrorDomains.external.contains((error as NSError).domain) {
+						self?.handleImplicitCancelOfLogIn()
+					} else {
+						self?.invokeHandler(result: .failure(error))
+					}
 			}
 		}
 	}
 
-	#warning("save me to keychain plz")
-	private var challenge = ""
-	private func storeExpectedChallenge(_ challenge: String) {
-		self.challenge = challenge
+	private let FBSDKExpectedChallengeKey = "expected_login_challenge"
+	private var challenge: String? {
+		get {
+			return KeychainStore.loginManager.string(for: FBSDKExpectedChallengeKey)
+		}
+		set {
+			KeychainStore.loginManager.set(string: newValue, for: FBSDKExpectedChallengeKey, accessibility: .afterFirstUnlockThisDeviceOnly)
+		}
 	}
 
-	private func performBrowserLogInWithParameters(_ params: [String: String], completion: @escaping (Bool, String, Error?) -> Void) {
+	private func performBrowserLogInWithParameters(_ params: [String: String], completion: @escaping BridgeAPI.SessionCompletionHandler) {
 		var loginParams = params
 		loginParams["redirect_uri"] = FBURL.redirectUri
 		self.isUsedSFAuthSession = true
 		let url = FBURL.facebookURL(with: "m.", path: FBURL.oAuthPath, query: loginParams)
-		self.bridgeAPI.open(url: url, sender: self, fromVC: self.fromViewController) { (result) in
-			
-		}
-
-
+		self.bridgeAPI.open(url: url, sender: self, fromVC: self.fromViewController, completion: completion)
 	}
 
 	private func invokeHandler(result: Result<LoginResult, Error>) {
@@ -129,7 +139,7 @@ struct LoginResult {
 	let declinedPermissions: Set<String>
 }
 
-struct Token {
+struct Token: Codable {
 	let tokenString: String
 	let permissions: Set<String>
 	let declinedPermissions: Set<String>
@@ -158,19 +168,6 @@ extension FBLoginManager: IOpenUrlHandler {
 			completer.complete(self) { [weak self] (result) in
 				self?.completeAuthentication(result)
 			}
-//			if (isFacebookURL) {
-//				NSDictionary *urlParameters = [FBSDKLoginUtility queryParamsFromLoginURL:url];
-//				id<FBSDKLoginCompleting> completer = [[FBSDKLoginURLCompleter alloc] initWithURLParameters:urlParameters appID:[FBSDKSettings appID]];
-//
-//				if (_logger == nil) {
-//					_logger = [FBSDKLoginManagerLogger loggerFromParameters:urlParameters];
-//				}
-//
-//				// any necessary strong reference is maintained by the FBSDKLoginURLCompleter handler
-//				[completer completeLogIn:self withHandler:^(FBSDKLoginCompletionParameters *parameters) {
-//					[self completeAuthentication:parameters expectChallenge:YES];
-//					}];
-//			}
 		}
 		return isFacebookURL
 	}
@@ -178,38 +175,27 @@ extension FBLoginManager: IOpenUrlHandler {
 	private func completeAuthentication(_ result: FBLoginCompletion.LoginCompletionResult) {
 
 		guard case .success(let parameters) = result else {
-			#warning("self.invokeHandler")
-//			self.invokeHandler(result: result.flatMap(<#T##transform: (FBLoginCompletionParameters) -> Result<NewSuccess, Error>##(FBLoginCompletionParameters) -> Result<NewSuccess, Error>#>))
-//			[self invokeHandler:result error:error];
+			self.invokeHandler(result: .failure(result.error ?? FBSDKLoginError.unknown))
 			return
 		}
 
 		let token = parameters.accessTokenString
 		let cancelled = token.count == 0
 		let challengeReceived = parameters.challenge
-		let challengeExpected = self.challenge.replacingOccurrences(of: "+", with: " ")
+		let challengeExpected = self.challenge?.replacingOccurrences(of: "+", with: " ")
 		let challengePassed = challengeExpected == challengeReceived
-		self.storeExpectedChallenge("")
+		self.challenge = nil
 
 		if !cancelled && !challengePassed {
-			//			[self invokeHandler:result error:error];
-//			error = [NSError fbErrorForFailedLoginWithCode:FBSDKLoginErrorBadChallengeString];
-			#warning("Handle error")
+			self.invokeHandler(result: .failure(FBSDKLoginError.badChallenge))
 			return
 		}
 
 		var result: LoginResult?
-
-
 		if !cancelled {
 			var recentlyGrantedPermissions = parameters.permissions
 			let declinedPermissions = parameters.declinedPermissions
-
-			//			NSSet *previouslyGrantedPermissions = ([FBSDKAccessToken currentAccessToken] ?
-			//				[FBSDKAccessToken currentAccessToken].permissions :
-			//				nil);
-			#warning("previouslyGrantedPermissions")
-			let previouslyGrantedPermissions = Set<String>()
+			let previouslyGrantedPermissions = self.currentAccessToken?.permissions ?? Set<String>()
 			if !previouslyGrantedPermissions.isEmpty && !self.requestedPermissions.isEmpty {
 				// If there were no requested permissions for this auth - treat all permissions as granted.
 				// Otherwise this is a reauth, so recentlyGranted should be a subset of what was requested.
@@ -217,7 +203,7 @@ extension FBLoginManager: IOpenUrlHandler {
 			}
 
 			let recentlyDeclinedPermissions = self.requestedPermissions.intersection(declinedPermissions)
-			if !previouslyGrantedPermissions.isEmpty {
+			if !recentlyGrantedPermissions.isEmpty {
 				let token = Token(
 					tokenString: token,
 					permissions: parameters.permissions,
@@ -234,24 +220,21 @@ extension FBLoginManager: IOpenUrlHandler {
 					grantedPermissions: recentlyGrantedPermissions,
 					declinedPermissions: recentlyDeclinedPermissions
 				)
-				#warning("FBSDKAccessToken currentAccessToken")
-				return
-				//					if ([FBSDKAccessToken currentAccessToken]) {
-				//						[self validateReauthentication:[FBSDKAccessToken currentAccessToken] withResult:result];
-				//						// in a reauth, short circuit and let the login handler be called when the validation finishes.
-				//						return;
-				//					}
+				/// TODO: Если у нас есть токен, то попробуем обновить его время жизни, пока ничего не делаем
+				//	if ([FBSDKAccessToken currentAccessToken]) {
+				//		[self validateReauthentication:[FBSDKAccessToken currentAccessToken] withResult:result];
+				//		// in a reauth, short circuit and let the login handler be called when the validation finishes.
+				//		return;
+				//	}
 			}
 
 			if cancelled || recentlyGrantedPermissions.isEmpty {
-				//				NSSet *declinedPermissions = nil;
-				//				if ([FBSDKAccessToken currentAccessToken] != nil) {
-				//					// Always include the list of declined permissions from this login request
-				//					// if an access token is already cached by the SDK
-				//					declinedPermissions = recentlyDeclinedPermissions;
-				//				}
-				#warning("recentlyDeclinedPermissions")
-				let declinedPermissions = recentlyDeclinedPermissions
+				var declinedPermissions = Set<String>()
+				if self.currentAccessToken != nil {
+					// Always include the list of declined permissions from this login request
+					// if an access token is already cached by the SDK
+					declinedPermissions = recentlyDeclinedPermissions
+				}
 				result = LoginResult(
 					token: nil,
 					isCancelled: cancelled,
@@ -259,13 +242,11 @@ extension FBLoginManager: IOpenUrlHandler {
 					declinedPermissions: declinedPermissions
 				)
 			}
-
-
 		}
 
 		if let token = result?.token {
-			#warning("store token")
-//			[FBSDKAccessToken setCurrentAccessToken:result.token];
+			self.currentAccessToken = token
+			self.tokenCache.fbAccessToken = token
 		}
 
 		if let result = result {
@@ -273,9 +254,6 @@ extension FBLoginManager: IOpenUrlHandler {
 		} else {
 			self.invokeHandler(result: .failure(FBSDKLoginError.unknown))
 		}
-
-
 	}
-
 
 }

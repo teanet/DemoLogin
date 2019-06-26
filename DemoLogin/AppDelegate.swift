@@ -1,9 +1,12 @@
 import UIKit
 
+let fbLoginManager = FBLoginManager()
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	var window: UIWindow?
+
 
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -14,6 +17,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	}
 
+	func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+		let result = fbLoginManager.application(app, open: url, options: options)
+		print(">>>>>\(result)")
+		return true
+	}
 	
 
 }

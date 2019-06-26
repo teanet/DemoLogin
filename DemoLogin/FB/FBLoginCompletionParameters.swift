@@ -17,6 +17,17 @@ extension String {
 
 }
 
+extension FBLoginCompletion.LoginCompletionResult {
+
+	var error: Error? {
+		if case .failure(let error) = self {
+			return error
+		} else {
+			return nil
+		}
+	}
+
+}
 
 class FBLoginCompletion {
 	typealias LoginCompletionResult = Result<FBLoginCompletionParameters, Error>
@@ -52,10 +63,16 @@ class FBLoginCompletion {
 			if let dataAccessExpirationString = params["data_access_expiration_time"],
 				let interval = Double(dataAccessExpirationString),
 				interval > 0 {
-				dataAccessExpirationDate = Date.init(timeIntervalSince1970: interval)
+				dataAccessExpirationDate = Date(timeIntervalSince1970: interval)
 			}
 
 			let appID = InfoHelpers.fbAppID
+			var challenge: String?
+			if let stateData = params["state"]?.data(using: .utf8),
+				let stateObject = try? JSONSerialization.jsonObject(with: stateData, options: []) as? [String: Any] {
+				challenge =  stateObject["challenge"] as? String
+			}
+
 			let params = FBLoginCompletionParameters(
 				accessTokenString: accessToken,
 				permissions: permissions,
@@ -64,12 +81,8 @@ class FBLoginCompletion {
 				userID: userID,
 				expirationDate: expirationDate,
 				dataAccessExpirationDate: dataAccessExpirationDate,
-				challenge: nil
+				challenge: challenge
 			)
-			// TODO: Handle challenge
-			// NSError *error = nil;
-			// NSDictionary *state = [FBSDKInternalUtility objectForJSONString:parameters[@"state"] error:&error];
-			// _parameters.challenge = [FBSDKUtility URLDecode:state[@"challenge"]];
 			self.result = .success(params)
 		} else {
 			self.result = .failure(FBSDKLoginError.fbErrorFromReturnURLParameters(params))

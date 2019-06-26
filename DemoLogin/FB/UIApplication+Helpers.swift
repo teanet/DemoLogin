@@ -1,4 +1,5 @@
 import UIKit
+
 extension UIApplication {
 
 	static func findWindow() -> UIWindow? {

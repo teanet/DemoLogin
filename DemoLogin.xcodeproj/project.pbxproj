@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7323A04722C32069008D8AA0 /* KeychainStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7323A04622C32069008D8AA0 /* KeychainStore.swift */; };
+		7323A04922C34AEE008D8AA0 /* AccessTokenCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7323A04822C34AEE008D8AA0 /* AccessTokenCache.swift */; };
 		73256A51226451190074A605 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73256A50226451190074A605 /* AppDelegate.swift */; };
 		73256A53226451190074A605 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73256A52226451190074A605 /* ViewController.swift */; };
 		73256A56226451190074A605 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 73256A54226451190074A605 /* Main.storyboard */; };
@@ -26,6 +28,8 @@
 
 /* Begin PBXFileReference section */
 		5053679077076CE742DEC342 /* Pods_DemoLogin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DemoLogin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7323A04622C32069008D8AA0 /* KeychainStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainStore.swift; sourceTree = "<group>"; };
+		7323A04822C34AEE008D8AA0 /* AccessTokenCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessTokenCache.swift; sourceTree = "<group>"; };
 		73256A4D226451190074A605 /* DemoLogin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DemoLogin.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		73256A50226451190074A605 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		73256A52226451190074A605 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -113,6 +117,8 @@
 				733FFE88228531210082E326 /* UIApplication+Helpers.swift */,
 				733FFE8A2285352F0082E326 /* ContainerViewController.swift */,
 				733FFEB02287F26B0082E326 /* FBLoginCompletionParameters.swift */,
+				7323A04622C32069008D8AA0 /* KeychainStore.swift */,
+				7323A04822C34AEE008D8AA0 /* AccessTokenCache.swift */,
 			);
 			path = FB;
 			sourceTree = "<group>";
@@ -251,11 +257,13 @@
 				73635CE7227D65B400199506 /* BridgeAPI.swift in Sources */,
 				733FFE8D228538260082E326 /* BridgeAPIRequest.swift in Sources */,
 				733FFEB12287F26B0082E326 /* FBLoginCompletionParameters.swift in Sources */,
+				7323A04722C32069008D8AA0 /* KeychainStore.swift in Sources */,
 				73DC9BBA226C3771002E262A /* Applications.swift in Sources */,
 				73256A53226451190074A605 /* ViewController.swift in Sources */,
 				73256A51226451190074A605 /* AppDelegate.swift in Sources */,
 				73C429FF227BF4E600C7BCEA /* FBURL.swift in Sources */,
 				73256F2A226453C70074A605 /* FBLoginManager.swift in Sources */,
+				7323A04922C34AEE008D8AA0 /* AccessTokenCache.swift in Sources */,
 				733FFE89228531210082E326 /* UIApplication+Helpers.swift in Sources */,
 				733FFE8B2285352F0082E326 /* ContainerViewController.swift in Sources */,
 				73DC9BB8226C33AD002E262A /* InfoHelpers.swift in Sources */,
@@ -407,6 +415,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = HJ648XXPWE;
 				INFOPLIST_FILE = DemoLogin/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -429,6 +438,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = HJ648XXPWE;
 				INFOPLIST_FILE = DemoLogin/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (

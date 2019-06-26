@@ -18,7 +18,7 @@ extension ASWebAuthenticationSession: AuthenticationSession {
 
 final class BridgeAPI: NSObject {
 
-	typealias SessionCompletionHandler = (Result<Bool, Error>) -> Void
+	typealias SessionCompletionHandler = (Result<Void, Error>) -> Void
 	typealias AuthenticationCompletionHandler = (Result<URL, Error>) -> Void
 
 	private var expectingBackground = false
@@ -36,7 +36,7 @@ final class BridgeAPI: NSObject {
 			self.authenticationSessionCompletionHandler = { [weak self] result in
 				self?.isRequestingSFAuthenticationSession = false
 
-				self?.sessionCompletionHandler?(result.map({ _ in true }))
+				self?.sessionCompletionHandler?(result.map({ _ in () }))
 				if case .success(let url) = result {
 					self?.application(UIApplication.shared, openUrl: url, options: [.sourceApplication: "com.apple"])
 				}
@@ -52,8 +52,10 @@ final class BridgeAPI: NSObject {
 			self.open(url: url, sender: sender, completion: completion)
 			return
 		}
+		self.pendingURLOpen = sender
 
 		if #available(iOS 11.0, *), url.isFBAuthenticationURL {
+			self.sessionCompletionHandler = completion
 			self.openURLWithAuthenticationSession(url)
 			return
 		}
@@ -126,7 +128,11 @@ final class BridgeAPI: NSObject {
 		// Dispatch openURL calls to prevent hangs if we're inside the current app delegate's openURL flow already
 		DispatchQueue.main.async {
 			UIApplication.shared.open(url, options: [:], completionHandler: { (success) in
-				completion(.success(success))
+				if success {
+					completion(.success(()))
+				} else {
+					completion(.failure(FBSDKLoginError.unknown))
+				}
 			})
 		}
 	}
