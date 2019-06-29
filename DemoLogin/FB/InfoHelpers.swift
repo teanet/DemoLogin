@@ -18,8 +18,4 @@ extension InfoHelpers {
 		return InfoHelpers.infoPlist["FacebookAppID"] as? String ?? ""
 	}()
 
-	static func validateFBAppID() {
-		assert(!self.fbAppID.isEmpty, "You should set app id in your Info.plist using key: FacebookAppID")
-	}
-
 }

@@ -13,6 +13,12 @@ public protocol IOpenUrlHandler: AnyObject {
 
 final class FBLoginManager {
 
+	@objc static var fbAppID = InfoHelpers.fbAppID
+
+	static func validateFBAppID() {
+		assert(!self.fbAppID.isEmpty, "You should set app id in your Info.plist using key: FacebookAppID")
+	}
+
 	static let version = "5.0.0-rc.1"
 	var defaultAudience: Audience = .friends
 	private var isUsedSFAuthSession = false
@@ -116,7 +122,7 @@ final class FBLoginManager {
 	}
 
 	class func validateURLSchemes() {
-		InfoHelpers.validateFBAppID()
+		self.validateFBAppID()
 		assert(InfoHelpers.isRegisteredURLScheme(FBURL.myRedirectScheme), "You should register \(FBURL.myRedirectScheme) in your Info.plist")
 	}
 
